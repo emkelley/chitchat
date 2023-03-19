@@ -1,9 +1,16 @@
-import { ChatCompletionRequestMessage } from "openai";
+import { nanoid } from "nanoid";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ChatCompletionRequestMessage } from "openai";
+import { SYSTEM_PROMPT } from "../utils/openai";
 import { Usage } from "../types/openai";
 
-export interface Conversation {
+interface AppState {
+  openai_key: string | null;
+  current_chat: Chat | null;
+  history: Chat[] | [];
+}
+
+export interface Chat {
   id: string;
   name: string;
   model: "gpt-3.5-turbo";
@@ -11,26 +18,64 @@ export interface Conversation {
   messages: ChatCompletionRequestMessage[] | any[];
 }
 
-export const useAppStore = defineStore("app", () => {
-  const openai_key = ref("sk-xxxxxxxxxxxxxxxxxxxxx");
-  const current_conversation = ref<Conversation>();
-  const history = ref([]);
+export const useAppStore = defineStore("app", {
+  state: (): AppState => ({
+    openai_key: null,
+    current_chat: null,
+    history: [],
+  }),
+  actions: {
+    updateChatName(name: string) {
+      if (this.current_chat) {
+        this.current_chat.name = name;
+      }
+    },
 
-  const updateConversationName = (name: string) => {
-    if (current_conversation.value) {
-      current_conversation.value.name = name;
-    }
-  };
+    resetCurrentChat() {
+      this.current_chat = null;
+    },
 
-  const resetCurrentConversation = () => {
-    current_conversation.value = undefined;
-  };
+    startNewChat() {
+      this.saveCurrentChat();
+      this.seedNewChat();
+    },
 
-  return {
-    openai_key,
-    history,
-    resetCurrentConversation,
-    current_conversation,
-    updateConversationName,
-  };
+    loadChat(id: string) {
+      const chat = this.history.find((c) => c.id === id);
+      if (chat) {
+        this.current_chat = chat;
+      }
+    },
+
+    deleteChat(id: string) {
+      const index = this.history.findIndex((c) => c.id === id);
+      if (index > -1) {
+        this.history.splice(index, 1);
+      }
+    },
+
+    seedNewChat() {
+      this.current_chat = {
+        id: nanoid(),
+        name: nanoid(),
+        model: "gpt-3.5-turbo",
+        usage: {
+          prompt_tokens: 0,
+          completion_tokens: 0,
+          total_tokens: 0,
+        },
+        messages: [SYSTEM_PROMPT],
+      };
+    },
+
+    saveCurrentChat() {
+      if (!this.current_chat) return;
+      const id = this.current_chat.id;
+      const index = this.history.findIndex((c) => c.id === id);
+      if (index === -1) {
+        this.history = [...this.history, this.current_chat];
+      }
+    },
+  },
+  persist: true,
 });

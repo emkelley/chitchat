@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import ThemeSwitcher from "./ThemeSwitcher.vue";
+</script>
+
 <template>
   <section class="w-full h-full flex flex-col justify-between bg-base-300">
     <div
@@ -16,10 +20,3 @@
     </div>
   </section>
 </template>
-
-<script setup lang="ts">
-import { sendTestPrompt } from "../utils/openai";
-import ThemeSwitcher from "./ThemeSwitcher.vue";
-</script>
-
-<style scoped></style>

@@ -3,7 +3,13 @@ import { ref } from "vue";
 import Sidebar from "./components/Sidebar.vue";
 import { useAppStore } from "./stores/app.store";
 import { sendPrompt } from "./utils/openai";
-import { sendTestPrompt } from "./utils/openai";
+import { estimateCost } from "./utils/openai";
+import Markdown from "vue3-markdown-it";
+
+// TODO - display total conversation cost estimate
+// TODO - display prompt token and cost estimate?
+// TODO - display error message if prompt is too long
+// TODO - format message response from openai
 
 let appstore = useAppStore();
 
@@ -32,21 +38,41 @@ const handleSubmit = async () => {
     </aside>
     <main class="w-full flex flex-col justify-between bg-base-100">
       <section>
-        <nav class="p-2 flex justify-between items-center">
+        <nav class="p-2 flex justify-between items-center bg-base-200">
           <p>navbar start</p>
           <p>navbar end</p>
         </nav>
-        <!-- <div class="p-2 flex gap-4 items-center">
-          <p>metadata 1</p>
-          <p>metadata 2</p>
-        </div> -->
+        <div
+          v-if="appstore.current_conversation"
+          class="p-2 flex gap-4 items-center text-sm bg-base-300"
+        >
+          <p>
+            Tokens this chat:
+            {{ appstore.current_conversation.usage?.total_tokens }}
+          </p>
+          <p v-if="appstore.current_conversation.usage">
+            ~{{
+              estimateCost(appstore.current_conversation.usage).toLocaleString(
+                "en-US",
+                { style: "currency", currency: "USD", minimumFractionDigits: 5 }
+              )
+            }}
+          </p>
+        </div>
       </section>
-      <section v-if="appstore.current_conversation" class="h-full px-36">
+      <section
+        v-if="appstore.current_conversation"
+        class="h-full px-36 py-12 overflow-y-scroll"
+      >
         <article v-for="message in appstore.current_conversation!.messages">
           <div v-if="message.role === 'assistant'" class="chat chat-start">
             <div class="chat-header">ChatGPT - gpt-3.5-turbo</div>
-            <div class="chat-bubble chat-bubble-success">
-              {{ message.content }}
+            <div
+              class="chat-bubble chat-bubble-success"
+              style="white-space: pre-line"
+            >
+              <Markdown :source="message.content" class="rounded-md" />
+              <!-- {{ message.content }} -->
             </div>
           </div>
           <div v-if="message.role === 'user'" class="chat chat-end">
@@ -69,25 +95,25 @@ const handleSubmit = async () => {
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">Enter query below</span>
-            <span class="label-text-alt">
+            <div class="flex gap-4 items-center">
               <span
                 @click="appstore.current_conversation = undefined"
-                class="cursor-pointer underline mr-8"
+                class="label-text-alt cursor-pointer underline"
               >
                 Reset Conversation
               </span>
-              000 tokens estimated</span
-            >
+              <span class="label-text-alt"> 000 tokens estimated </span>
+            </div>
           </label>
-          <div class="flex gap-4">
-            <input
+          <div class="flex items-center gap-4">
+            <textarea
               v-model="prompt"
               type="text"
               placeholder="Type here"
-              class="input input-bordered w-full"
+              class="textarea textarea-bordered w-full"
               @keydown.enter="handleSubmit"
             />
-            <button class="btn btn-primary" @click="sendTestPrompt">
+            <button class="btn btn-primary" @click="handleSubmit">
               Submit
             </button>
           </div>

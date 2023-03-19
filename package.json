@@ -13,7 +13,8 @@
     "nanoid": "^4.0.1",
     "openai": "^3.2.1",
     "pinia": "^2.0.33",
-    "vue": "^3.2.47"
+    "vue": "^3.2.47",
+    "vue3-markdown-it": "^1.0.10"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",

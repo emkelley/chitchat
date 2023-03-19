@@ -12,7 +12,8 @@ const openai = new OpenAIApi(config);
 
 const SYSTEM_PROMPT: ChatCompletionRequestMessage = {
   role: "system",
-  content: "You are a senior software engineer and full-stack web developer.",
+  content:
+    "You are a senior software engineer and full-stack web developer. Provide responses in markdown format.",
 };
 
 export const sendPrompt = async (prompt: string) => {
@@ -42,8 +43,11 @@ export const sendPrompt = async (prompt: string) => {
       model,
       messages: conversation.messages,
     });
-    // update the current_conversation with the completion - message and usage
-    current_conversation.value.usage = data.usage;
+    current_conversation.value.usage!.prompt_tokens +=
+      data.usage!.prompt_tokens;
+    current_conversation.value.usage!.completion_tokens +=
+      data.usage!.completion_tokens;
+    current_conversation.value.usage!.total_tokens += data.usage!.total_tokens;
     current_conversation.value.messages = [
       ...current_conversation.value.messages,
       data.choices[0].message as ChatCompletionRequestMessage,

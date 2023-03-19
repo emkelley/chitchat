@@ -15,14 +15,12 @@ const handleSubmit = async () => {
   const p = prompt.value;
   if (p.length < 5) return;
   loading.value = true;
-  try {
-    prompt.value = "";
-    await sendPrompt(p);
-    loading.value = false;
-  } catch (error: any) {
-    console.log(error);
-    loading.value = false;
-    error.value = error;
+  prompt.value = "";
+  let res = await sendPrompt(p);
+  loading.value = false;
+  if (typeof res === "string") {
+    error.value = res;
+    return;
   }
 };
 </script>
@@ -38,10 +36,10 @@ const handleSubmit = async () => {
           <p>navbar start</p>
           <p>navbar end</p>
         </nav>
-        <div class="p-2 flex gap-4 items-center">
+        <!-- <div class="p-2 flex gap-4 items-center">
           <p>metadata 1</p>
           <p>metadata 2</p>
-        </div>
+        </div> -->
       </section>
       <section v-if="appstore.current_conversation" class="h-full px-36">
         <article v-for="message in appstore.current_conversation!.messages">
@@ -71,7 +69,15 @@ const handleSubmit = async () => {
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text">Enter query below</span>
-            <span class="label-text-alt">000 tokens estimated</span>
+            <span class="label-text-alt">
+              <span
+                @click="appstore.current_conversation = undefined"
+                class="cursor-pointer underline mr-8"
+              >
+                Reset Conversation
+              </span>
+              000 tokens estimated</span
+            >
           </label>
           <div class="flex gap-4">
             <input

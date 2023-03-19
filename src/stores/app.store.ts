@@ -22,5 +22,15 @@ export const useAppStore = defineStore("app", () => {
     }
   };
 
-  return { openai_key, history, current_conversation, updateConversationName };
+  const resetCurrentConversation = () => {
+    current_conversation.value = undefined;
+  };
+
+  return {
+    openai_key,
+    history,
+    resetCurrentConversation,
+    current_conversation,
+    updateConversationName,
+  };
 });

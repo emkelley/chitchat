@@ -55,10 +55,12 @@ export const sendPrompt = async (prompt: string) => {
     current_conversation.value.usage!.completion_tokens +=
       data.usage!.completion_tokens;
     current_conversation.value.usage!.total_tokens += data.usage!.total_tokens;
+
     current_conversation.value.messages = [
       ...current_conversation.value.messages,
       data.choices[0].message as ChatCompletionRequestMessage,
     ];
+
     return data;
   } catch (error: any) {
     console.log(error);
@@ -73,27 +75,7 @@ const createUserPrompt = (prompt: string): ChatCompletionRequestMessage => {
     content: prompt,
   };
 };
-export const sendTestPrompt = async (): Promise<OpenAIResponse> => {
-  const model = "gpt-3.5-turbo";
-  const messages: ChatCompletionRequestMessage[] = [
-    {
-      role: "system",
-      content:
-        "You are a senior software engineer and full-stack web developer.",
-    },
-    {
-      role: "user",
-      content: "You are looking for a new job.",
-    },
-  ];
 
-  const { data } = await openai.createChatCompletion({
-    model,
-    messages,
-  });
-  console.log(data);
-  return data as OpenAIResponse;
-};
 export const estimateCost = (usage: Usage) => {
   const { total_tokens } = usage;
   const cost = (total_tokens / 1000) * 0.002;

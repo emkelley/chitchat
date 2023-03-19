@@ -6,6 +6,11 @@ let state = useAppStore();
 const emits = defineEmits(["submit"]);
 
 let prompt = ref("");
+
+const submit = () => {
+  emits("submit", prompt.value);
+  prompt.value = "";
+};
 </script>
 <template>
   <div ref="input-box" class="bg-base-200 p-8 border-t border-primary">
@@ -29,11 +34,8 @@ let prompt = ref("");
           rows="1"
           placeholder="Type here"
           class="textarea textarea-bordered w-full max-h-24"
-          @keydown.enter="() => emits('submit', prompt)"
         />
-        <button class="btn btn-primary" @click="() => emits('submit', prompt)">
-          Submit
-        </button>
+        <button class="btn btn-primary" @click="() => submit">Submit</button>
       </div>
     </div>
   </div>

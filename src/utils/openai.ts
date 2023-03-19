@@ -26,6 +26,11 @@ export const sendPrompt = async (prompt: string) => {
       id: nanoid(),
       name: nanoid(),
       model: "gpt-3.5-turbo",
+      usage: {
+        prompt_tokens: 0,
+        completion_tokens: 0,
+        total_tokens: 0,
+      },
       messages: [SYSTEM_PROMPT, createUserPrompt(prompt)],
     };
   } else {
@@ -43,6 +48,8 @@ export const sendPrompt = async (prompt: string) => {
       model,
       messages: conversation.messages,
     });
+    console.log(data);
+
     current_conversation.value.usage!.prompt_tokens +=
       data.usage!.prompt_tokens;
     current_conversation.value.usage!.completion_tokens +=
@@ -54,6 +61,8 @@ export const sendPrompt = async (prompt: string) => {
     ];
     return data;
   } catch (error: any) {
+    console.log(error);
+
     return error.error.message;
   }
 };

@@ -12,9 +12,7 @@
     <div class="p-4 flex flex-col gap-4">
       Theme:
       <ThemeSwitcher />
-      <button class="btn btn-primary w-full" @click="sendTestPrompt">
-        test submit
-      </button>
+      <button class="btn w-full">Export Chats</button>
     </div>
   </section>
 </template>

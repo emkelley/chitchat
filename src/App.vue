@@ -13,7 +13,7 @@ import Markdown from "vue3-markdown-it";
 
 let appstore = useAppStore();
 
-let prompt = ref("");
+let prompt = ref("typescript function to calculate x digits of pi");
 let error = ref("");
 let loading = ref(false);
 
@@ -77,18 +77,20 @@ const handleSubmit = async () => {
           </div>
           <div v-if="message.role === 'user'" class="chat chat-end">
             <div class="chat-header">me</div>
-            <div class="chat-bubble chat-bubble-info">
+            <div class="chat-bubble chat-bubble-primary">
               {{ message.content }}
             </div>
           </div>
         </article>
+        <div v-show="error" class="chat chat-start">
+          <div class="chat-header">ChatGPT - gpt-3.5-turbo</div>
+          <div class="chat-bubble chat-bubble-error">
+            API Error: {{ error }}.
+          </div>
+        </div>
         <div v-show="loading" class="chat chat-start">
           <div class="chat-header">ChatGPT - gpt-3.5-turbo</div>
           <div class="chat-bubble">thinking...</div>
-        </div>
-        <div v-show="error" class="chat chat-start">
-          <div class="chat-header">ChatGPT - gpt-3.5-turbo</div>
-          <div class="chat-bubble chat-bubble-error">{{ error }}.</div>
         </div>
       </section>
       <div ref="input-box" class="bg-base-200 p-8">
@@ -123,4 +125,8 @@ const handleSubmit = async () => {
   </div>
 </template>
 
-<style></style>
+<style>
+pre {
+  @apply rounded-lg overflow-hidden;
+}
+</style>

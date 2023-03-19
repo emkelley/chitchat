@@ -3,7 +3,7 @@ import "./style.css";
 import App from "./App.vue";
 import { createPinia } from "pinia";
 import Markdown from "vue3-markdown-it";
-import "highlight.js/styles/monokai.css";
+import "highlight.js/styles/tokyo-night-dark.css";
 
 const pinia = createPinia();
 

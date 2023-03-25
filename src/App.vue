@@ -64,7 +64,7 @@ onMounted(() => {
       >
         <article v-for="message in state.current_chat!.messages">
           <div v-if="message.role === 'assistant'" class="chat chat-start">
-            <div class="chat-header">ChatGPT - gpt-3.5-turbo</div>
+            <div class="chat-header">gpt-3.5-turbo</div>
             <div class="chat-bubble">
               <Markdown :source="message.content" class="rounded-md" />
             </div>
@@ -77,13 +77,13 @@ onMounted(() => {
           </div>
         </article>
         <div v-show="error" class="chat chat-start">
-          <div class="chat-header">ChatGPT - gpt-3.5-turbo</div>
+          <div class="chat-header">gpt-3.5-turbo</div>
           <div class="chat-bubble chat-bubble-error">
             API Error: {{ error }}.
           </div>
         </div>
         <div v-show="loading" class="chat chat-start">
-          <div class="chat-header">ChatGPT - gpt-3.5-turbo</div>
+          <div class="chat-header">gpt-3.5-turbo</div>
           <div class="chat-bubble">thinking...</div>
         </div>
       </section>
@@ -100,5 +100,8 @@ onMounted(() => {
 <style>
 pre {
   @apply rounded-lg overflow-hidden;
+}
+.chat-header {
+  @apply mb-2 pl-4;
 }
 </style>

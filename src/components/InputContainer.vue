@@ -1,11 +1,20 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useAppStore } from "../stores/app.store";
+import GPT3Tokenizer from "gpt3-tokenizer";
+import { estimateTokensCost } from "../utils/openai";
 
+const tokenizer = new GPT3Tokenizer({ type: "gpt3" }); // or 'codex'
 let state = useAppStore();
 const emits = defineEmits(["submit"]);
 
 let prompt = ref("");
+let tokenized_prompt = computed(() => {
+  const encoded: { bpe: number[]; text: string[] } = tokenizer.encode(
+    prompt.value
+  );
+  return encoded.bpe.length;
+});
 
 const submit = () => {
   emits("submit", prompt.value);
@@ -33,15 +42,18 @@ const submit = () => {
       </div>
     </div>
     <label class="label mt-6">
-      <span class="label-text">Enter query above</span>
+      <span
+        @click="() => state.resetCurrentChat()"
+        class="label-text cursor-pointer underline"
+      >
+        Reset Conversation
+      </span>
       <div class="flex gap-4 items-center">
-        <span
-          @click="() => state.resetCurrentChat()"
-          class="label-text-alt cursor-pointer underline"
-        >
-          Reset Conversation
+        <span class="label-text">
+          {{ tokenized_prompt }} Tokens - ~{{
+            estimateTokensCost(tokenized_prompt)
+          }}
         </span>
-        <span class="label-text-alt"> 000 tokens estimated </span>
       </div>
     </label>
   </div>

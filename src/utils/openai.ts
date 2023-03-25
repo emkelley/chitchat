@@ -12,7 +12,7 @@ let openai: OpenAIApi;
 export const SYSTEM_PROMPT: ChatCompletionRequestMessage = {
   role: "system",
   content:
-    "You are a senior software engineer and full-stack web developer. Provide responses in markdown format.",
+    "You are a senior software engineer and full-stack web developer. Provide responses in markdown format using 4 new lines between paragraphs.",
 };
 
 export const initOpenAI = async () => {
@@ -89,6 +89,14 @@ const createUserPrompt = (prompt: string): ChatCompletionRequestMessage => {
 export const estimateCost = (usage: Usage) => {
   const { total_tokens } = usage;
   const cost = (total_tokens / 1000) * 0.002;
+  return cost.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 5,
+  });
+};
+export const estimateTokensCost = (tokens: number) => {
+  const cost = (tokens / 1000) * 0.002;
   return cost.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",

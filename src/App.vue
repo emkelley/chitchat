@@ -12,12 +12,15 @@ import InputContainer from "./components/InputContainer.vue";
 let state = useAppStore();
 let error = ref("");
 let loading = ref(false);
+let chat = ref<HTMLElement>();
 
 const handleSubmit = async (prompt: string) => {
   if (prompt.length < 5) return;
   loading.value = true;
   let res = await sendPrompt(prompt);
   loading.value = false;
+  if (chat.value)
+    chat.value.scrollIntoView({ behavior: "smooth", block: "end" });
   if (typeof res === "string") {
     error.value = res;
     return;
@@ -55,13 +58,14 @@ onMounted(() => {
         </div>
       </section>
       <section
+        ref="chat"
         v-if="state.current_chat"
-        class="h-full px-36 py-12 overflow-y-scroll flex flex-col gap-3"
+        class="h-full px-36 pt-12 pb-36 overflow-y-scroll flex flex-col gap-3 relative"
       >
         <article v-for="message in state.current_chat!.messages">
           <div v-if="message.role === 'assistant'" class="chat chat-start">
             <div class="chat-header">ChatGPT - gpt-3.5-turbo</div>
-            <div class="chat-bubble chat-bubble-success">
+            <div class="chat-bubble">
               <Markdown :source="message.content" class="rounded-md" />
             </div>
           </div>
@@ -83,7 +87,10 @@ onMounted(() => {
           <div class="chat-bubble">thinking...</div>
         </div>
       </section>
-      <div class="flex items-center justify-center w-full">
+      <div class="flex flex-col items-center justify-center w-full relative">
+        <section
+          class="bg-gradient-to-b from-transparent via-[#0a0e0f] to-[#0a0e0f] h-24 w-full absolute -top-24"
+        ></section>
         <InputContainer @submit="handleSubmit" />
       </div>
     </main>

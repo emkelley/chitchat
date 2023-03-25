@@ -21,9 +21,15 @@ const submit = () => {
           type="text"
           rows="1"
           placeholder="Type here"
+          single-line
+          dense
+          hide-details
+          auto-grow
+          @keydown.enter.exact.prevent="submit()"
+          @keydown.enter.shift.exact.prevent="prompt += '\n'"
           class="textarea textarea-bordered w-full max-h-24 bg-[#202426]"
         />
-        <button class="btn btn-primary" @click="() => submit">Submit</button>
+        <button class="btn btn-primary" @click="() => submit()">Submit</button>
       </div>
     </div>
     <label class="label mt-6">

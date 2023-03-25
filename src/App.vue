@@ -32,15 +32,17 @@ onMounted(() => {
 
 <template>
   <div class="flex h-screen">
-    <aside class="w-96 border-r border-primary">
+    <aside class="w-96 border-r-2 border-[#202228]">
       <Sidebar />
     </aside>
-    <main class="w-full flex flex-col justify-between bg-base-100">
+    <main class="w-full flex flex-col justify-between bg-[#0a0e0f]">
       <section>
-        <nav class="p-2 flex justify-between items-center bg-base-300">
-          <p>navbar start</p>
-          <p>navbar end</p>
-        </nav>
+        <section
+          v-if="!state.openai_key"
+          class="bg-red-900 text-white font-black flex justify-center p-4"
+        >
+          <p>No API key found. Save a new one before beginning.</p>
+        </section>
         <div
           v-if="state.current_chat && state.current_chat.usage"
           class="p-2 flex gap-4 items-center text-sm shadow-sm"
@@ -49,28 +51,17 @@ onMounted(() => {
             Tokens this chat:
             {{ state.current_chat.usage.total_tokens }}
           </p>
-          <p>
-            ~{{
-              estimateCost(state.current_chat.usage).toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-                minimumFractionDigits: 5,
-              })
-            }}
-          </p>
+          <p>~{{ estimateCost(state.current_chat.usage) }}</p>
         </div>
       </section>
       <section
         v-if="state.current_chat"
-        class="h-full px-36 py-12 overflow-y-scroll"
+        class="h-full px-36 py-12 overflow-y-scroll flex flex-col gap-3"
       >
         <article v-for="message in state.current_chat!.messages">
           <div v-if="message.role === 'assistant'" class="chat chat-start">
             <div class="chat-header">ChatGPT - gpt-3.5-turbo</div>
-            <div
-              class="chat-bubble chat-bubble-success"
-              style="white-space: pre-line"
-            >
+            <div class="chat-bubble chat-bubble-success">
               <Markdown :source="message.content" class="rounded-md" />
             </div>
           </div>
@@ -92,7 +83,9 @@ onMounted(() => {
           <div class="chat-bubble">thinking...</div>
         </div>
       </section>
-      <InputContainer @submit="handleSubmit" />
+      <div class="flex items-center justify-center w-full">
+        <InputContainer @submit="handleSubmit" />
+      </div>
     </main>
   </div>
 </template>

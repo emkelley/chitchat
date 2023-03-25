@@ -16,11 +16,18 @@ export const SYSTEM_PROMPT: ChatCompletionRequestMessage = {
 };
 
 export const initOpenAI = async () => {
+  console.log("Initializing OpenAI...");
+
   let appstore = useAppStore();
   let { openai_key } = storeToRefs(appstore);
-  let apiKey = openai_key.value || import.meta.env.VITE_OPENAI_API_KEY;
+  let apiKey = openai_key.value;
+  if (typeof apiKey === "undefined" || apiKey === null) {
+    console.log("OpenAI API key not found.");
+    return;
+  }
   const config = new Configuration({ apiKey });
   openai = new OpenAIApi(config);
+  console.log(`OpenAI successfully initialized with key: ${apiKey}.`);
 };
 
 export const sendPrompt = async (prompt: string) => {
@@ -82,5 +89,9 @@ const createUserPrompt = (prompt: string): ChatCompletionRequestMessage => {
 export const estimateCost = (usage: Usage) => {
   const { total_tokens } = usage;
   const cost = (total_tokens / 1000) * 0.002;
-  return cost;
+  return cost.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 5,
+  });
 };

@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/node": "^18.15.9",
     "daisyui": "^2.51.4",
     "nanoid": "^4.0.1",
     "openai": "^3.2.1",

@@ -20,7 +20,7 @@ export interface Chat {
 
 export const useAppStore = defineStore("app", {
   state: (): AppState => ({
-    openai_key: null,
+    openai_key: "",
     current_chat: null,
     history: [],
   }),

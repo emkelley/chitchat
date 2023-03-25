@@ -46,7 +46,7 @@ watch(theme, (newTheme) => {
 </script>
 
 <template>
-  <select v-model="theme" class="select w-full max-w-xs">
+  <select v-model="theme" class="select w-full max-w-xs bg-[#202426]">
     <option v-for="t in availableThemes" :value="t">{{ t }}</option>
   </select>
 </template>

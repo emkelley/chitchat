@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useAppStore } from "../stores/app.store";
-import GPT3Tokenizer from "gpt3-tokenizer";
 import { estimateTokensCost } from "../utils/openai";
+import GPT3Tokenizer from "gpt3-tokenizer";
 
-const tokenizer = new GPT3Tokenizer({ type: "gpt3" }); // or 'codex'
 let state = useAppStore();
 const emits = defineEmits(["submit"]);
+const tokenizer = new GPT3Tokenizer({ type: "gpt3" });
 
-let prompt = ref("");
 let rows = ref(1);
+let prompt = ref("");
+
 let tokenized_prompt = computed(() => {
   const encoded: { bpe: number[]; text: string[] } = tokenizer.encode(
     prompt.value
@@ -35,12 +36,12 @@ const submit = () => {
           dense
           hide-details
           auto-grow
+          class="textarea textarea-bordered w-full max-h-24 bg-[#202426]"
           @keydown.enter.exact.prevent="submit()"
           @keydown.enter.shift.exact.prevent="
             prompt += '\n';
             rows++;
           "
-          class="textarea textarea-bordered w-full max-h-24 bg-[#202426]"
         />
         <button class="btn btn-primary" @click="() => submit()">Submit</button>
       </div>

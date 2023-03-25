@@ -9,6 +9,7 @@ let state = useAppStore();
 const emits = defineEmits(["submit"]);
 
 let prompt = ref("");
+let rows = ref(1);
 let tokenized_prompt = computed(() => {
   const encoded: { bpe: number[]; text: string[] } = tokenizer.encode(
     prompt.value
@@ -28,14 +29,17 @@ const submit = () => {
         <textarea
           v-model="prompt"
           type="text"
-          rows="1"
+          :rows="rows"
           placeholder="Type here"
           single-line
           dense
           hide-details
           auto-grow
           @keydown.enter.exact.prevent="submit()"
-          @keydown.enter.shift.exact.prevent="prompt += '\n'"
+          @keydown.enter.shift.exact.prevent="
+            prompt += '\n';
+            rows++;
+          "
           class="textarea textarea-bordered w-full max-h-24 bg-[#202426]"
         />
         <button class="btn btn-primary" @click="() => submit()">Submit</button>

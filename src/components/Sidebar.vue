@@ -57,7 +57,9 @@ let state = useAppStore();
     </div>
     <div class="p-4 flex flex-col gap-4">
       <label for="my-modal" class="btn w-full btn-primary">Settings</label>
-      <button class="btn w-full">Export Chats</button>
+      <button @click="state.exportChats()" class="btn w-full">
+        Export Chats
+      </button>
     </div>
   </section>
   <SettingsModal />

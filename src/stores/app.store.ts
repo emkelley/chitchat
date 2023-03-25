@@ -54,6 +54,18 @@ export const useAppStore = defineStore("app", {
       }
     },
 
+    exportChats() {
+      const dataStr =
+        "data:text/json;charset=utf-8," +
+        encodeURIComponent(JSON.stringify(this.history));
+      const downloadAnchorNode = document.createElement("a");
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "chats.json");
+      document.body.appendChild(downloadAnchorNode); // required for firefox
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    },
+
     seedNewChat() {
       this.current_chat = {
         id: nanoid(),

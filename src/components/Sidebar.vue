@@ -23,6 +23,12 @@ let state = useAppStore();
       >
         New Chat
       </button>
+      <button
+        class="btn btn-sm w-full text-base-content"
+        @click="state.saveCurrentChat()"
+      >
+        Save Chat Snapshot
+      </button>
       <h2 class="text-lg font-bold">Chat Snapshots</h2>
       <section v-if="state.history" class="flex flex-col gap-4 w-full">
         <div
@@ -55,7 +61,23 @@ let state = useAppStore();
       </section>
     </div>
     <div class="p-4 flex flex-col gap-4">
-      <label for="my-modal" class="btn w-full btn-primary">Settings</label>
+      <div class="flex gap-4">
+        <label for="my-modal" class="btn btn-primary">Settings</label>
+        <a
+          href="https://github.com/emkelley/chitchat"
+          class="btn text-lg"
+          target="_blank"
+        >
+          <i class="fa-brands fa-github" />
+        </a>
+        <a
+          href="https://twitter.com/0NEGUYY"
+          class="btn text-lg"
+          target="_blank"
+        >
+          <i class="fa-brands fa-twitter" />
+        </a>
+      </div>
       <button @click="state.exportChats()" class="btn w-full">
         Export Chats
       </button>

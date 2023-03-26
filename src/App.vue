@@ -48,13 +48,25 @@ onMounted(() => {
         </section>
         <div
           v-if="state.current_chat && state.current_chat.usage"
-          class="p-2 flex gap-4 items-center text-sm shadow-sm"
+          class="p-4 flex gap-4 items-center justify-between shadow-sm border-b border-primary"
         >
           <p>
-            Tokens this chat:
-            {{ state.current_chat.usage.total_tokens }}
+            {{ state.current_chat.name || "Untitled Chat" }}
           </p>
-          <p>~{{ estimateCost(state.current_chat.usage) }}</p>
+          <div class="flex gap-2 items-center">
+            <p class="mr-4">This Chat:</p>
+            <p
+              class="bg-primary p-2 text-slate-900 font-bold rounded-full px-4"
+            >
+              Chat tokens:
+              {{ state.current_chat.usage.total_tokens }}
+            </p>
+            <p
+              class="bg-emerald-400 p-2 text-slate-900 font-bold rounded-full px-4"
+            >
+              ~{{ estimateCost(state.current_chat.usage) }}
+            </p>
+          </div>
         </div>
       </section>
       <section

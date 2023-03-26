@@ -24,8 +24,23 @@ const submit = () => {
 };
 </script>
 <template>
-  <div ref="input-box" class="pb-24 w-[40vw]">
+  <div ref="input-box" class="w-[50vw] pb-8">
     <div class="form-control w-full">
+      <label class="label mt-6">
+        <span
+          @click="() => state.resetCurrentChat()"
+          class="label-text cursor-pointer underline"
+        >
+          Reset Conversation
+        </span>
+        <div class="flex gap-4 items-center">
+          <span class="label-text">
+            {{ tokenized_prompt }} Tokens - ~{{
+              estimateTokensCost(tokenized_prompt)
+            }}
+          </span>
+        </div>
+      </label>
       <div class="flex items-center gap-4">
         <textarea
           v-model="prompt"
@@ -46,21 +61,6 @@ const submit = () => {
         <button class="btn btn-primary" @click="() => submit()">Submit</button>
       </div>
     </div>
-    <label class="label mt-6">
-      <span
-        @click="() => state.resetCurrentChat()"
-        class="label-text cursor-pointer underline"
-      >
-        Reset Conversation
-      </span>
-      <div class="flex gap-4 items-center">
-        <span class="label-text">
-          {{ tokenized_prompt }} Tokens - ~{{
-            estimateTokensCost(tokenized_prompt)
-          }}
-        </span>
-      </div>
-    </label>
   </div>
 </template>
 

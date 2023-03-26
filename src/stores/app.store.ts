@@ -12,7 +12,7 @@ interface AppState {
 
 export interface Chat {
   id: string;
-  name: string;
+  name: string | undefined;
   model: "gpt-3.5-turbo";
   usage?: Usage;
   messages: ChatCompletionRequestMessage[] | any[];
@@ -25,12 +25,6 @@ export const useAppStore = defineStore("app", {
     history: [],
   }),
   actions: {
-    updateChatName(name: string) {
-      if (this.current_chat) {
-        this.current_chat.name = name;
-      }
-    },
-
     resetCurrentChat() {
       this.current_chat = null;
     },
@@ -54,7 +48,19 @@ export const useAppStore = defineStore("app", {
       }
     },
 
+    updateChatName(id: string, name: string) {
+      const chat = this.history.find((c) => c.id === id);
+      if (chat) {
+        chat.name = name;
+      }
+    },
+
     exportChats() {
+      if (this.history.length === 0) {
+        return alert(
+          "No chats to export. Save a chat snapshot first and try again."
+        );
+      }
       const dataStr =
         "data:text/json;charset=utf-8," +
         encodeURIComponent(JSON.stringify(this.history));
@@ -69,7 +75,7 @@ export const useAppStore = defineStore("app", {
     seedNewChat() {
       this.current_chat = {
         id: nanoid(),
-        name: nanoid(),
+        name: undefined,
         model: "gpt-3.5-turbo",
         usage: {
           prompt_tokens: 0,

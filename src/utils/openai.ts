@@ -1,13 +1,11 @@
+import { nanoid } from "nanoid";
+import { storeToRefs } from "pinia";
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { Chat, useAppStore } from "../stores/app.store";
-import { nanoid } from "nanoid";
-import { OpenAIResponse, Usage } from "../types/openai";
-import { storeToRefs } from "pinia";
+import { Usage } from "../types/openai";
 
-const config = new Configuration({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-});
 let openai: OpenAIApi;
+const model = "gpt-3.5-turbo";
 
 export const SYSTEM_PROMPT: ChatCompletionRequestMessage = {
   role: "system",
@@ -33,12 +31,12 @@ export const initOpenAI = async () => {
 export const sendPrompt = async (prompt: string) => {
   let appstore = useAppStore();
   let { current_chat, history } = storeToRefs(appstore);
-  const model = "gpt-3.5-turbo";
   let conversation: Chat;
   if (!current_chat.value) {
+    const id = nanoid();
     conversation = {
-      id: nanoid(),
-      name: nanoid(),
+      id: id,
+      name: undefined,
       model: model,
       usage: {
         prompt_tokens: 0,
@@ -54,18 +52,26 @@ export const sendPrompt = async (prompt: string) => {
     };
   }
   current_chat.value = conversation;
+
   try {
     const { data } = await openai.createChatCompletion({
       model,
       messages: conversation.messages,
     });
-    console.log(data);
 
+    // Generate a new chat name if it's the first message
+    const chat_name = await generateChatName(prompt);
+    if (current_chat.value.messages.length === 2) {
+      current_chat.value.name = chat_name.choices[0].message?.content as string;
+    }
+
+    // Update the token usage
     current_chat.value.usage!.prompt_tokens += data.usage!.prompt_tokens;
     current_chat.value.usage!.completion_tokens +=
       data.usage!.completion_tokens;
     current_chat.value.usage!.total_tokens += data.usage!.total_tokens;
 
+    // Update the chat messages
     current_chat.value.messages = [
       ...current_chat.value.messages,
       data.choices[0].message as ChatCompletionRequestMessage,
@@ -77,6 +83,24 @@ export const sendPrompt = async (prompt: string) => {
 
     return error.error.message;
   }
+};
+
+const generateChatName = async (prompt: string) => {
+  const { data } = await openai.createChatCompletion({
+    model,
+    messages: [
+      {
+        role: "system",
+        content:
+          "The user will provide a prompt for a chat. Provide a title for the chat using 20 characters or less. Do not use punctuation. Do not add quotes.",
+      },
+      {
+        role: "user",
+        content: `Given the following prompt, provide a title: \`${prompt}\``,
+      },
+    ],
+  });
+  return data;
 };
 
 const createUserPrompt = (prompt: string): ChatCompletionRequestMessage => {

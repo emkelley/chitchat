@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useAppStore } from "../stores/app.store";
-import ThemeSwitcher from "./ThemeSwitcher.vue";
 import { estimateCost } from "../utils/openai";
 import SettingsModal from "./SettingsModal.vue";
 let state = useAppStore();

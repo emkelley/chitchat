@@ -29,7 +29,7 @@ let state = useAppStore();
       >
         Save Chat Snapshot
       </button>
-      <h2 class="text-lg font-bold">Chat Snapshots</h2>
+      <h2 class="text-lg font-bold mt-6">Chat Snapshots</h2>
       <section v-if="state.history" class="flex flex-col gap-4 w-full">
         <div
           v-for="chat in state.history"

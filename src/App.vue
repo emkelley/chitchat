@@ -93,9 +93,9 @@ onMounted(() => {
         </section>
         <div
           v-if="state.current_chat && state.current_chat.usage"
-          class="p-4 flex gap-4 items-center justify-between shadow-sm border-b border-primary"
+          class="p-4 flex gap-4 items-center justify-between shadow-sm bg-[#121617] border-b-2 border-[#202228]"
         >
-          <p>
+          <p class="text-xl font-bold">
             {{ state.current_chat.name || "Untitled Chat" }}
           </p>
           <div class="flex gap-2 items-center">
@@ -154,6 +154,7 @@ onMounted(() => {
 
 <style lang="scss">
 .chat-bubble {
+  @apply py-4;
   p {
     @apply mb-4;
   }

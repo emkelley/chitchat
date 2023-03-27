@@ -70,7 +70,7 @@ let state = useAppStore();
       </section>
     </div>
     <div class="p-4 flex flex-col gap-4">
-      <div class="flex gap-4">
+      <div class="flex gap-4 items-center justify-center">
         <label for="my-modal" class="btn btn-primary">Settings</label>
         <a
           href="https://github.com/emkelley/chitchat"

@@ -31,7 +31,7 @@ onMounted(() => {
 <template>
   <input type="checkbox" id="my-modal" class="modal-toggle" />
   <div class="modal">
-    <div class="modal-box">
+    <div class="modal-box bg-[#080a0a]">
       <h3 class="font-bold text-3xl mb-2">Settings</h3>
       <hr class="border-primary mb-4 mt-2" />
       <div class="flex flex-col gap-3">

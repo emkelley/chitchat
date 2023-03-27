@@ -3,12 +3,15 @@ import { onMounted, ref } from "vue";
 import Sidebar from "./components/Sidebar.vue";
 import { useAppStore } from "./stores/app.store";
 import { initOpenAI, sendPrompt, estimateCost } from "./utils/openai";
-import Markdown from "vue3-markdown-it";
+import { marked } from "marked";
 import InputContainer from "./components/InputContainer.vue";
+import hljs from "highlight.js";
+import { useToast } from "vue-toastification";
 
 // TODO - display prompt token and cost estimate?
 // TODO - display error message if prompt is too long
 
+const toast = useToast();
 let state = useAppStore();
 let error = ref("");
 let loading = ref(false);
@@ -19,12 +22,54 @@ const handleSubmit = async (prompt: string) => {
   loading.value = true;
   let res = await sendPrompt(prompt);
   loading.value = false;
-  if (chat.value)
+  if (chat.value) {
     chat.value.scrollIntoView({ behavior: "smooth", block: "end" });
+  }
   if (typeof res === "string") {
     error.value = res;
     return;
   }
+};
+
+const addCopyButtons = () => {
+  setTimeout(() => {
+    const codeBlocks = document.querySelectorAll("pre code");
+    codeBlocks.forEach((block: any) => {
+      const button = document.createElement("button");
+      button.classList.add(
+        "absolute",
+        "top-14",
+        "right-6",
+        "bg-primary/70",
+        "text-slate-900",
+        "font-bold",
+        "rounded-md",
+        "hover:bg-primary",
+        "px-2",
+        "py-1",
+        "m-2"
+      );
+      button.innerText = "Copy";
+      button.addEventListener("click", () => {
+        navigator.clipboard.writeText(block.innerText);
+        toast.success("Copied to clipboard!");
+      });
+      block.appendChild(button);
+    });
+  }, 1000);
+};
+
+const parseMd = (markdown: string) => {
+  const md = marked.setOptions({
+    gfm: true,
+    breaks: true,
+    xhtml: true,
+    highlight: function (code, lang) {
+      return hljs.highlight(lang, code).value;
+    },
+  });
+  addCopyButtons();
+  return md(markdown);
 };
 
 onMounted(() => {
@@ -77,9 +122,7 @@ onMounted(() => {
         <article v-for="message in state.current_chat!.messages">
           <div v-if="message.role === 'assistant'" class="chat chat-start">
             <div class="chat-header">gpt-3.5-turbo</div>
-            <div class="chat-bubble">
-              <Markdown :source="message.content" class="rounded-md" />
-            </div>
+            <div class="chat-bubble" v-html="parseMd(message.content)"></div>
           </div>
           <div v-if="message.role === 'user'" class="chat chat-end">
             <div class="chat-header">me</div>
@@ -102,16 +145,21 @@ onMounted(() => {
       <div class="flex flex-col items-center justify-center w-full relative">
         <section
           class="bg-gradient-to-b from-transparent via-[#0a0e0f] to-[#0a0e0f] h-24 w-full absolute -top-24"
-        ></section>
+        />
         <InputContainer @submit="handleSubmit" />
       </div>
     </main>
   </div>
 </template>
 
-<style>
-pre {
-  @apply rounded-lg overflow-hidden;
+<style lang="scss">
+.chat-bubble {
+  p {
+    @apply mb-4;
+  }
+  pre {
+    @apply rounded-lg overflow-hidden bg-[#0a0e0f] p-4 mb-4;
+  }
 }
 .chat-header {
   @apply mb-2 pl-4;

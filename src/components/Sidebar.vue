@@ -34,13 +34,22 @@ let state = useAppStore();
         <div
           v-for="chat in state.history"
           :key="chat.id"
-          class="flex flex-col gap-4 text-xs border border-primary rounded-lg p-3"
+          class="flex flex-col gap-4 text-xs border border-primary/50 hover:border-primary transition-all rounded-md bg-black/20 p-3"
         >
           <div class="flex gap-4 items-center">
             <div class="flex flex-col gap-2">
-              <p class="text-sm">{{ chat.name }}</p>
-              <p class="text-sm">{{ chat.usage!.total_tokens }} tokens</p>
-              <p class="text-sm">{{ estimateCost(chat.usage!) }} est. cost</p>
+              <p class="text-lg">{{ chat.name }}</p>
+              <div class="flex gap-2 items-center justify-between">
+                <p class="font-bold rounded-sm">
+                  Chat tokens:
+                  {{ chat.usage!.total_tokens }}
+                </p>
+                <p
+                  class="bg-emerald-400/30 p-1 text-white/70 font-bold rounded-full px-2.5"
+                >
+                  ~{{ estimateCost(chat.usage!) }}
+                </p>
+              </div>
             </div>
           </div>
           <div class="flex gap-4">

@@ -10,7 +10,7 @@ const model = "gpt-3.5-turbo";
 export const SYSTEM_PROMPT: ChatCompletionRequestMessage = {
   role: "system",
   content:
-    "You are a senior software engineer and full-stack web developer. Provide responses in markdown format using 4 new lines between paragraphs.",
+    "You are a senior software engineer and full-stack web developer. Provide responses in github flavored markdown format using 4 new lines between paragraphs.",
 };
 
 export const initOpenAI = async () => {
